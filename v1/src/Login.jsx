@@ -1,34 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Link, Route, Switch,useHistory} from 'react-router-dom';
 import base_url from './Url.js';
 import axios from "axios";
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
+axios.defaults.withCredentials=true;
 function Login(props)
 {
    const history = useHistory();
    const [userInput,setInput]= useState({ 
       username:"",
       password:""
-   });
+   }); 
 
  function submit(props)
 {
    console.log(userInput);
    console.log("Inside Submit");
+   console.log(document.cookie.split(" ")[0].split("=")[1]); 
 
+  
    axios.get(`${base_url}/login`,
    {
-         params: 
-         {
-            username: userInput.username,
-            password: userInput.password
-         }
+      params:{
+         username:userInput.username,
+         password:userInput.password
+      }
       }).then( (response)=>{
-        console.log("Connected to backend Succesfully "+response.cookies);
-        if(response.data==="SUCCESS")
+        console.log("Connected to backend Succesfully "+response.data.jwt);
+        if(response.data=="SUCCESS")
           history.push('/Home');
         else
         console.log(response.data);
@@ -37,6 +40,23 @@ function Login(props)
         console.log(error);
       });
 }
+
+useEffect(()=>{
+  
+   axios.get(`${base_url}/isLogin`,
+   {
+      }).then( (response)=>{
+        console.log("Connected to backend Succesfully "+response.data.jwt);
+        if(response.data=="VALID")
+          history.push('/Home');
+        else
+        console.log(response.data);
+      },(error)=>{
+        toast.error("Something Went Wrong!");
+        console.log(error);
+      });
+},[]);
+
 
 function inputEvent(event)
 {

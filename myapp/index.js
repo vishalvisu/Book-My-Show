@@ -2,22 +2,22 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-//const  cookie_parser= require('cookie-parser');
+const  cookieParser= require('cookie-parser');
 mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true,useUnifiedTopology: true });
 const cors = require('cors');
 const app = express();
 const port = 3001;
 
-app.use(cors({credentials:true,origin:'http://localhost:3000'}));
+app.use(cookieParser());
+  app.use(express.json());
 
+app.use(cors({credentials: true,'origin': 'http://localhost:3000'}));
 app.use(
     express.urlencoded({
       extended: true
     })
   );
   
-  app.use(express.json());
-  //app.use(cookie_parser);
 
   const db = mongoose.connection;
   db.on('error', console.error.bind(console, 'connection error:'));
@@ -42,7 +42,9 @@ app.use(
     rating:String,
     desc: String,
     watch_now: String,
-    Genre: String
+    Genre: String,
+    Language:String,
+    ReleaseWeek:String
   });
 
    const movie= mongoose.model('movie',movieSchema);
@@ -50,16 +52,11 @@ app.use(
    var isValidated=false;
 
 
-
-app.get('/', (req, res) => {
-  console.log("login");
- res.send('Hello,Its Working Fine! ');
-});
-
 var maxAge=3*24*60*60;
+var secretKey="821305";
 const jwt_Token= function(id)
 {
-   return jwt.sign({id},"821305",{expiresIn:maxAge});
+   return jwt.sign({id},secretKey,{expiresIn:maxAge});
 };
 
 function check_username (req,res)
@@ -136,7 +133,7 @@ function validate_login(req,res)
   console.log("Inside Validate");
   userProfile.find({ 'username': req.query.username},'password1 phone', function (err,result) 
 {
-  console.log(result);
+  //console.log(result);
     if (err) console.log(err);
     else
         {
@@ -145,9 +142,9 @@ function validate_login(req,res)
         bcrypt.compare(req.query.password,result[0].password1, function(err,match) {
           if (match) {
             console.log("It matches!");
-            console.log(result);
+    //        console.log(result);
             let token= jwt_Token(result[0]._id);
-            res.cookie("jwt",{jwt:token,maxAge:maxAge*1000});
+            res.cookie("jwt",token,{maxAge:maxAge*1000});
             success(res);
           }
           else {
@@ -170,8 +167,46 @@ function success(res)
 }
 
 // HTTP REQUESTS
+
+app.get('/', (req, res) => {
+   
+  console.log("REQUEST");
+  let  token= req.cookies.jwt;
+  if(token)
+  {
+    jwt.verify(token,secretKey,(err,decodedToken)=>{
+           if(err)
+           res.send("Invalid");
+           else
+           res.send("VALID");
+    });
+  }
+    else
+    res.send("Invalid");
+});
+
+
+app.get('/isLogin', (req, res) => {
+   
+  console.log("REQUEST");
+  let  token= req.cookies.jwt;
+  if(token)
+  {
+    jwt.verify(token,secretKey,(err,decodedToken)=>{
+           if(err)
+           res.send("Invalid");
+           else
+           res.send("VALID");
+    });
+  }
+    else
+    res.send("Invalid");
+});
+
+
+
 app.post('/sign_up/',function (req, res) {
-    console.log(req);
+    //console.log(req);
     console.log("post request is called");
      
     check_username(req,res);
@@ -179,19 +214,26 @@ app.post('/sign_up/',function (req, res) {
 
 
 app.get('/login/', (req, res) => {
-   // console.log(req.query);
+    console.log(req.cookies.jwt);
     console.log("server hit");
 
-    let cooky= req.cookies;
+  //  let cooky= req.cookies.jwt;
     //res.send("SUCCESS");
-     console.log(cooky);
+    // console.log(cooky);
     validate_login(req,res);
 }); 
 
-app.get('/latest_movies',(req,res)=>{
-   
-  movie.find({}, function(err,data) {
-    console.log(data);
+app.get('/logout',(req,res)=>{
+
+  res.clearCookie("jwt");
+   res.send("LOGOUTTED");
+});
+
+app.get('/latestMovies',(req,res)=>{
+
+  console.log(req.query);
+  movie.find({'Language':req.query.Language, 'ReleaseWeek':req.query.ReleaseWeek,'Genre':req.query.Genre}, function(err,data) {
+  //  console.log(data);
     
     res.send({movies:data});
  });

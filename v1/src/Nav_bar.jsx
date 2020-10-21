@@ -12,7 +12,7 @@ function Nav_bar(props)
   const [userChoice,setChoice]= useState({
    
     Genre:"Comedy",
-    ReleaseWeek:"this",
+    ReleaseWeek:"This",
     Language:"Hindi"
   });
 
@@ -33,27 +33,11 @@ function Nav_bar(props)
       });
    }
 
-  // useEffect(() => {
+   useEffect(() => {
 
-   // props.fun([]);
-    /* console.log(data);
-
-    axios.get(`${base_url}/latest_movies/`, 
-    {
-          params: 
-          {
-             name:"GONE GIRL"
-          }
-       }).then(
-       (response)=>{
-           data.length=0;
-         console.log("Connected to backend Succesfully "+response.data);
-       },(error)=>{
-         toast.error("Something Went Wrong!");
-         console.log(error);
-       });*/  
-         
-  //});
+    props.fun(userChoice);
+           
+  },[]);
      
 
 
@@ -64,7 +48,7 @@ function Nav_bar(props)
     return(
         <div className="nav_bar">
         <div className="choice">
-      <label for="genre">Genre</label>
+      <label for="Genre">Genre</label>
       <br/>
       <select name="Genre" id="genre" onChange={ChangeChoice}>
   <option value="Comedy">Comedy</option>
@@ -74,12 +58,12 @@ function Nav_bar(props)
       </select>
     </div>
     <div className="choice">
-      <label for="release_week">Release Week</label>
+      <label for="ReleaseWeek">Release Week</label>
       <br/>
       <select name="ReleaseWeek" id="release_week" onChange={ChangeChoice}>
-  <option value="this">this</option>
-  <option value="last_week">last_week</option>
-  <option value="others">others</option>
+  <option value="This">This</option>
+  <option value="Previous">LastWeek</option>
+  <option value="Others">others</option>
       </select>
     </div>
 
@@ -89,8 +73,7 @@ function Nav_bar(props)
       <select name="Language" id="language" onChange={ChangeChoice}>
   <option value="Hindi">Hindi</option>
   <option value="English">English</option>
-  <option value="tamil">Tamil</option>
-  <option value="Horror">Horror</option>
+  <option value="Tamil">Tamil</option>
       </select>
 </div>
  </div>
