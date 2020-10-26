@@ -7,19 +7,7 @@ var data=[
     "desc":"Akhandanand Tripathi made millions exporting carpets and became the mafia boss of Mirzapur. His son Munna, an unworthy, power-hungry heir, stops at nothing to continue his father's legacy.",
   "watch_now":"https://www.primevideo.com/detail/Mirzapur/0PDOKMV9CRLOMO5EUKNCUJLG4Q","Genre":"Comedy",
   "Language":"Hindi","ReleaseWeek":"This",
-  "availiability":[
-       {"kolkata":
-       [
-         {
-           "INOX":{"time":["9:30","12:30","2:30","6:50"]}
-         },
-      {
-        "PLAZA":{"time":["9:30","12:10","2:20","5:50"]}
-      }
-    ]
-  }]},
-      {"Delhi":[{"INOX":{"time":["9:20","11:30","3:30","4:50"]}}
-    ]
+  "cities":["kolkata","delhi"]
     },
 
     {"link":"https://tvseriesfinale.com/wp-content/uploads/2014/04/siliconvalley03-590x331.jpg","title":"Silicon Valley","rating":"8.5",
@@ -36,4 +24,7 @@ var data=[
      "watch_now":"https://www.amazon.com/The-Family-Man-Season-1/dp/B07XGLTVY7","Genre":"Comedy","Langauge":"Hindi",
     "ReleaseWeek":"This"}];
 
+   var cities=[{"kolkata":["plaza","renox"]}];
+   
+   
      export default data;

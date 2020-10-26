@@ -48,9 +48,74 @@ app.use(
   });
 
    const movie= mongoose.model('movie',movieSchema);
+   
+   const movies_in_cities=new mongoose.Schema({
+       City:String,
+       List:Array
+   });
 
-   var isValidated=false;
+//   obj={
+  //   "City":"Kolkata",
+ //     "List":["Mirzapur"]
+ ///  };
 
+   const movies_list_in_cities= mongoose.model('movies_list_in_cities',movies_in_cities);
+  // const nobj= new movies_list_in_cities(obj);
+   
+  /* nobj.save(function(err,obj){
+               if(err)
+              console.log(err);
+              else
+              console.log("Data Saved"); 
+   });*/
+
+   const CityMovieCinemasIdSchema=new mongoose.Schema({
+    City:String,
+    title:String,
+    CinemasId:Array
+});
+
+const CityMovieCinemasId= mongoose.model('CityMovieCinemasId',CityMovieCinemasIdSchema);
+
+/*obj={
+
+  "City":"Kolkata",
+  "title":"Mirzapur",
+  "CinemasId":["kol123","kol124","kol125","kol126"]
+};
+
+const nobj= new CityMovieCinemasId(obj);
+
+nobj.save(function(err,obj){
+  if(err)
+ console.log(err);
+ else
+ console.log("Data Saved"); 
+});*/
+
+const CityCinemaIdCinemaNameSchema= new mongoose.Schema({
+  City:String,
+  CinemaNamewithCinemaId:Array
+});
+
+const CityCinemaIdCinemaName= mongoose.model('CityCinemaIdCinemaName',CityCinemaIdCinemaNameSchema);
+
+/*obj={
+  
+  "City":"Kolkata",
+  "CinemaNamewithCinemaId":[{"kol123":"newMax"},{"kol124":"Plaza"},{"kol125":"CityMall"},{"kol126":"cityCentre"}]
+};
+
+const nobj= new CityCinemaIdCinemaName(obj);
+
+nobj.save(function(err,obj){
+  if(err)
+ console.log(err);
+ else
+ console.log("Data Saved"); 
+});*/
+
+var isValidated=false;
 
 var maxAge=3*24*60*60;
 var secretKey="821305";
@@ -141,7 +206,7 @@ function validate_login(req,res)
        {
         bcrypt.compare(req.query.password,result[0].password1, function(err,match) {
           if (match) {
-            console.log("It matches!");
+            console.log("It matched!");
     //        console.log(result);
             let token= jwt_Token(result[0]._id);
             res.cookie("jwt",token,{maxAge:maxAge*1000});
@@ -217,9 +282,6 @@ app.get('/login/', (req, res) => {
     console.log(req.cookies.jwt);
     console.log("server hit");
 
-  //  let cooky= req.cookies.jwt;
-    //res.send("SUCCESS");
-    // console.log(cooky);
     validate_login(req,res);
 }); 
 
@@ -231,14 +293,72 @@ app.get('/logout',(req,res)=>{
 
 app.get('/latestMovies',(req,res)=>{
 
+  let ans=[],
+  Genre=req.query.Genre,
+  Language=req.query.Language;
+  
   console.log(req.query);
-  movie.find({'Language':req.query.Language, 'ReleaseWeek':req.query.ReleaseWeek,'Genre':req.query.Genre}, function(err,data) {
-  //  console.log(data);
-    
-    res.send({movies:data});
- });
+  movies_list_in_cities.find({'City':req.query.City},function(err,list){
+          if(err)
+          res.send({movies:ans});
+          else if(list.length==0)
+          res.send({movies:ans});
+          else
+          {
+            console.log(list[0].List);
+              movie.find({}, function(err,data) {
+                for(let i=0;i<data.length;i++)
+                {
+                  for(let j=0;j<list[0].List.length;j++)
+                  {
+          if(data[i].title==list[0].List[j]&&(Genre==''||Genre==data[i].Genre)&&(Language==''||Language==data[i].Language))
+                      ans.push(data[i]);
+                  }
+                }
+                res.send({movies:ans});
+                });
+          }
+  });
 });
 
+app.get('/theatres',(req,res)=>{
+  
+  console.log("Inside Theatres ");
+console.log(req.query);
+
+  CityMovieCinemasId.find({ 'City': req.query.City,'title':req.query.title },function (err,list)
+{
+    if(err)
+    res.send(err);
+    else
+    {
+      let cinemasId= list[0].CinemasId;
+
+      CityCinemaIdCinemaName.find({'City':req.query.City},function(err,result){
+          if(err)
+          res.send(err);
+          else
+          {
+            let list=result[0].CinemaNamewithCinemaId;
+             
+            for(let i=0;i<list.length;i++)
+            {
+              for(let j=0;j<cinemasId.length;j++)
+              {
+                
+              }
+            }
+
+          }   
+      });
+
+    }
+});
+
+    console.log("Inside Theatres ");
+    console.log(req.query);
+
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

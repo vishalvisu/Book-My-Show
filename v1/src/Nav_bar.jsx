@@ -12,7 +12,7 @@ function Nav_bar(props)
   const [userChoice,setChoice]= useState({
    
     Genre:"Comedy",
-    ReleaseWeek:"This",
+    City:"Kolkata",
     Language:"Hindi"
   });
 
@@ -37,13 +37,7 @@ function Nav_bar(props)
 
     props.fun(userChoice);
            
-  },[]);
-     
-
-
-
-
-
+  },[]);   
 
     return(
         <div className="nav_bar">
@@ -54,16 +48,16 @@ function Nav_bar(props)
   <option value="Comedy">Comedy</option>
   <option value="Crime">Crime</option>
   <option value="Drama">Drama</option>
-  <option value="Horror">Horror</option>
+  <option value="">All</option>
       </select>
     </div>
     <div className="choice">
-      <label for="ReleaseWeek">Release Week</label>
+      <label for="City">City</label>
       <br/>
-      <select name="ReleaseWeek" id="release_week" onChange={ChangeChoice}>
-  <option value="This">This</option>
-  <option value="Previous">LastWeek</option>
-  <option value="Others">others</option>
+      <select name="City" id="City" onChange={ChangeChoice}>
+  <option value="Kolkata">Kolkata</option>
+  <option value="Delhi">Delhi</option>
+  <option value="Mumbai">Mumbai</option>
       </select>
     </div>
 
@@ -73,7 +67,7 @@ function Nav_bar(props)
       <select name="Language" id="language" onChange={ChangeChoice}>
   <option value="Hindi">Hindi</option>
   <option value="English">English</option>
-  <option value="Tamil">Tamil</option>
+  <option value="">All</option>
       </select>
 </div>
  </div>

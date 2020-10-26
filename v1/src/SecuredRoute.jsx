@@ -20,7 +20,10 @@ export default function SecuredRoute(props) {
   if (error) return "ERROR";
   if (data=="VALID")
   {
-     return(<Route path={props.path} component={props.component} exact/>);
+    console.log(props);
+     return <Route path={props.path}  render={() => 
+      <Home fun1={props.fun1}/>
+    }/>;
   }
   else
   {

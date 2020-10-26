@@ -5,6 +5,11 @@ import './index.css';
 
 function Poster(props)
 {  
+
+  function handleClick()
+  {
+    props.fun4(props.title);
+  }
    return(
     <>
     <div className="poster">
@@ -18,11 +23,8 @@ function Poster(props)
    </div>
    </div>
    <div className="book_ticket">
-  
-     <a id="book_now" href='/Home/Select_location_time' target="blank">
-  <button className="book_btn">Book_Now</button>
-     </a>
 
+  <button className="book_btn" onClick={handleClick}>Book_Now</button>
    
    </div></div>
    </>

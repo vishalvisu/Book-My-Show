@@ -50,7 +50,7 @@ useEffect(()=>{
         if(response.data=="VALID")
           history.push('/Home');
         else
-        console.log(response.data);
+         history.push('/');
       },(error)=>{
         toast.error("Something Went Wrong!");
         console.log(error);
