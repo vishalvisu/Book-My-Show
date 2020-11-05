@@ -9,15 +9,24 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Home from './Home.jsx';
 import Select_location_time from './Select_location_time.jsx';
 import SecuredRoute from './SecuredRoute';
+import Seat_Layout from './Seat_Layout';
 
-var city,title;
+var names=[],city,title;
 
-function store(a,b)
+function store(a,b,c)
 {
-   console.log(a+" "+b);
-    
-   city=b;
-   title=a;
+   console.log(a);
+   console.log(b);
+    names=a;
+    title=b;
+    city=c;
+}
+
+var cinemaId,tm;
+function cinemaId_Time(x,y)
+{
+    cinemaId=x;
+    tm=y;
 }
 
 ReactDOM.render
@@ -29,9 +38,10 @@ ReactDOM.render
               <SecuredRoute fun1={store} path='/Home' component={Home} exact/>
               <Route path="/sign_up" component={Sign_up} exact/> 
               <Route path="/Home/Select_location_time" 
-               render={() =><Select_location_time City={city} Title={title}/>}
+               render={() =><Select_location_time CinemasName={names} City={city} send={cinemaId_Time}/>}
                exact/>
-              <Route  path="/Home/Select_location_time/Select_Seat" component={Seat_booking} exact/>            
+              <Route  path="/Home/Select_location_time/Select_Seat"
+               render={() =><Seat_booking cinemaId={cinemaId} tm={tm} title={title}/>} exact/>            
     </Switch>
     </BrowserRouter>
   </>,

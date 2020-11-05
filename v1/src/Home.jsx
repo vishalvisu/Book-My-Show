@@ -47,6 +47,7 @@ function fun2(title)
     console.log("fun2");
     //props.fun1(title,city);
 
+    let ans=[];
     axios.get(`${base_url}/theatres/`, 
     {
           params: 
@@ -57,6 +58,7 @@ function fun2(title)
        }).then(
        (response)=>{
          console.log(response.data);
+         props.fun1(response.data,title,city);
          history.push('/Home/Select_location_time');
        },(error)=>{
          toast.error("Something Went Wrong!");

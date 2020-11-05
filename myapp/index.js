@@ -115,6 +115,48 @@ nobj.save(function(err,obj){
  console.log("Data Saved"); 
 });*/
 
+const CinemaTimingSchema= new mongoose.Schema({
+  CinemaId:String,
+  timing:Array
+});
+
+const CinemaTiming = mongoose.model('CinemaTiming',CinemaTimingSchema);
+
+//format_date=month/date/year
+
+const ShowSchema= new mongoose.Schema({
+   title:String,
+   CinemaId:String,
+   fotmat_date: String,
+   format_time: String,
+   Seat_Layout: String
+});
+
+/*let avl="";
+for(let i=0;i<=99;i++)
+   avl+="1";
+
+obj={
+
+  title:"Mirzapur",
+  CinemaId:"KOL123",
+  fotmat_date:new Date().toLocaleDateString(),
+  format_time:"9:10-11:30",
+  Seat_Layout:avl
+
+};*/
+
+const ShowDetails = mongoose.model('ShowDetails',ShowSchema);
+
+/*const nobj= new ShowDetails(obj);
+
+nobj.save(function(err,obj){
+  if(err)
+ console.log(err);
+ else
+ console.log("Data Saved"); 
+});*/
+
 var isValidated=false;
 
 var maxAge=3*24*60*60;
@@ -161,7 +203,7 @@ console.log("Check phone");
 
 function check_email (req,res)
 {
-  console.log("check email");
+//  console.log("check email");
 
   userProfile.find({ 'email': req.body.email }, 'username', function (err,result) {
     if (err) console.log(err);
@@ -195,7 +237,7 @@ function save_new_user(req,res)
 
 function validate_login(req,res)
 {    
-  console.log("Inside Validate");
+ // console.log("Inside Validate");
   userProfile.find({ 'username': req.query.username},'password1 phone', function (err,result) 
 {
   //console.log(result);
@@ -206,14 +248,14 @@ function validate_login(req,res)
        {
         bcrypt.compare(req.query.password,result[0].password1, function(err,match) {
           if (match) {
-            console.log("It matched!");
+    //        console.log("It matched!");
     //        console.log(result);
             let token= jwt_Token(result[0]._id);
             res.cookie("jwt",token,{maxAge:maxAge*1000});
             success(res);
           }
           else {
-            console.log("Invalid password!");
+    //        console.log("Invalid password!");
             res.send("INVALID LOGIN NO SUCH USER EXISTS");
           }
         });
@@ -227,15 +269,19 @@ function validate_login(req,res)
 function success(res)
 {
      isValidated= true;
-     console.log(res);
+  //   console.log(res);
     res.send("SUCCESS");
 }
 
-// HTTP REQUESTS
+// HTTP REQUESTS 
+// REQUESTS
+// STARTS 
+// HERE
+
 
 app.get('/', (req, res) => {
    
-  console.log("REQUEST");
+//  console.log("REQUEST");
   let  token= req.cookies.jwt;
   if(token)
   {
@@ -253,7 +299,7 @@ app.get('/', (req, res) => {
 
 app.get('/isLogin', (req, res) => {
    
-  console.log("REQUEST");
+ // console.log("REQUEST");
   let  token= req.cookies.jwt;
   if(token)
   {
@@ -272,15 +318,15 @@ app.get('/isLogin', (req, res) => {
 
 app.post('/sign_up/',function (req, res) {
     //console.log(req);
-    console.log("post request is called");
+    //console.log("post request is called");
      
     check_username(req,res);
   });
 
 
 app.get('/login/', (req, res) => {
-    console.log(req.cookies.jwt);
-    console.log("server hit");
+   // console.log(req.cookies.jwt);
+  //  console.log("server hit");
 
     validate_login(req,res);
 }); 
@@ -297,7 +343,7 @@ app.get('/latestMovies',(req,res)=>{
   Genre=req.query.Genre,
   Language=req.query.Language;
   
-  console.log(req.query);
+ // console.log(req.query);
   movies_list_in_cities.find({'City':req.query.City},function(err,list){
           if(err)
           res.send({movies:ans});
@@ -305,7 +351,7 @@ app.get('/latestMovies',(req,res)=>{
           res.send({movies:ans});
           else
           {
-            console.log(list[0].List);
+       //     console.log(list[0].List);
               movie.find({}, function(err,data) {
                 for(let i=0;i<data.length;i++)
                 {
@@ -323,13 +369,15 @@ app.get('/latestMovies',(req,res)=>{
 
 app.get('/theatres',(req,res)=>{
   
-  console.log("Inside Theatres ");
-console.log(req.query);
+//  console.log("Inside Theatres ");
+//console.log(req.query);
 
   CityMovieCinemasId.find({ 'City': req.query.City,'title':req.query.title },function (err,list)
 {
     if(err)
     res.send(err);
+    else if(list.length==0)
+    res.send("No Result");
     else
     {
       let cinemasId= list[0].CinemasId;
@@ -340,25 +388,72 @@ console.log(req.query);
           else
           {
             let list=result[0].CinemaNamewithCinemaId;
-             
+             let ans=[];
             for(let i=0;i<list.length;i++)
             {
               for(let j=0;j<cinemasId.length;j++)
               {
-                
+                let Ids= Object.keys(list[i]);
+                let names= Object.values(list[i]);
+                let id=Ids[0],name=names[0];
+                  if(Ids[0]==cinemasId[j])
+                  {
+                    ans.push(
+                         {
+                          "Id":Ids[0],
+                          "name":names[0]
+                         }
+                      );
+                  }
               }
             }
-
+     //      console.log(result[0].CinemaNamewithCinemaId);
+     //      console.log(cinemasId);
+           res.send(ans);
           }   
       });
 
     }
 });
 
-    console.log("Inside Theatres ");
-    console.log(req.query);
+  //  console.log("Inside Theatres ");
+   // console.log(req.query);
+});
+
+
+app.get('/get_timing',(req,res)=>{
+    
+ // console.log(req.query.id);
+  CinemaTiming.find({'CinemaId':req.query.id},(err,result)=> {
+        if (err||result.length==0) 
+         res.send(err);
+        else
+          res.send(result[0].timing);
+       });
+});
+
+app.get('/bookTicket',(req,res)=>{
+    
+  console.log(req.query);
+
+  ShowDetails.find({'title':req.query.title,'CinemaId':req.query.CinemaId,'format_date':req.query.format_date,
+            'format_time':req.query.format_time},(err,result)=> {
+    if (err||result.length==0) 
+    {
+      console.log(err);
+      console.log(result);
+     res.send(err);
+    }
+    else
+    {
+      console.log(result[0].Seat_Layout);
+      res.send("BOOKED");
+    }
+   });
+
 
 });
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

@@ -90,7 +90,8 @@ img{
   align-items: center;
   height: 300px;
   background-color: DodgerBlue;
-  margin: 150px 50px;
+  margin: 250px 50px;
+
 }
 .seat_level
 {
@@ -222,15 +223,54 @@ input
   font-weight: bolder;
   margin: 0px;
 }
-.select_seat
-{
-   
-  text-align: center;
 
+.select_seat
+{   
+  text-align: center;
 }
+
 .card-title
 {
   color: blue;
   text-align: center;
   font-size: larger;
 }
+
+
+#layout {
+  margin: 60px;
+  background: #111;
+}
+
+.theatre 
+{
+  margin-top: 250px;
+  display: flex;
+  position: absolute;
+}
+
+.cinema-seats 
+{
+  display: flex;
+}
+  .seat {
+    cursor: pointer;
+    height: 40px;
+    width: 50px; 
+    margin:2px;
+    border: 2px solid brown;
+    border-radius: 4px;
+  }    
+    
+  .cinema-seats
+  {
+    margin: 20px;
+  }
+  .btn
+  {
+    cursor: pointer;
+    height: 40px;
+    width: 50px; 
+    border-radius: 4px;
+    background-color:lightgreen;
+  }
